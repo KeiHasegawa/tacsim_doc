@@ -1,0 +1,26 @@
+2019.03.10 に Visual Studio 版の tacsim.dll のテスト
+
+cygwin gcc のヘッダーファイルをインクルード
+    ↓
+Visual Studio のヘッダーファイルをインクルード
+
+のように変更した. このとき
+
+41_ISO_IEC_9899/6_Language/5_Declarations/5_Declarators/3_Function_declarators/1_ok/test007.c
+
+で期待通り動作しなかった. tacsim 内でのメモリアクセス違反.
+
+va_arg のマクロが原因.
+
+x64 intel のコンパイラ(Visual Studio も cygwin gcc も hcc1 + intel.dll も)
+構造体引数 : 呼び出し側でコピーを作成してそのアドレスを渡す
+
+tacsim.dll の規約
+構造体引数 : コピーをべたっと張り付ける
+
+参考 x86 intel のコンパイラ tacsim.dll と同じ
+
+以上の理由から, 通常通り Visual Studio 版のヘッダーをインクルードしても
+正しく動作しないのはしょうがないので, プリプロセッサのオプションで対応することに
+した.
+
